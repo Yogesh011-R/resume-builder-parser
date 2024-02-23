@@ -1,10 +1,11 @@
-import { TextItem, TextItems } from "./types";
-import * as pdfjs from "pdfjs-dist";
+import { TextItem, TextItems } from './types';
+import * as pdfjs from 'pdfjs-dist';
+// @ts-ignore
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-import type { TextItem as PdfjsTextItem } from "pdfjs-dist/types/src/display/api";
+import type { TextItem as PdfjsTextItem } from 'pdfjs-dist/types/src/display/api';
 
 export const readPdf = async (fileUrl: string): Promise<TextItems> => {
   const pdffile = await pdfjs.getDocument(fileUrl).promise;
@@ -17,7 +18,7 @@ export const readPdf = async (fileUrl: string): Promise<TextItems> => {
     await page.getOperatorList();
     const commonObjs = page.commonObjs;
 
-    const pageTextItems = textContent.items.map((item) => {
+    const pageTextItems = textContent.items.map(item => {
       const {
         str: text,
         dir,
@@ -32,7 +33,7 @@ export const readPdf = async (fileUrl: string): Promise<TextItems> => {
       const fontObj = commonObjs.get(pdfFontName);
       const fontName = fontObj.name;
 
-      const newText = text.replace(/--/g, "-");
+      const newText = text.replace(/--/g, '-');
 
       const newItem = {
         ...otherProps,
@@ -49,9 +50,9 @@ export const readPdf = async (fileUrl: string): Promise<TextItems> => {
   }
 
   const isEmptySpace = (textItem: TextItem) =>
-    !textItem.hasEOL && textItem.text.trim() === "";
+    !textItem.hasEOL && textItem.text.trim() === '';
 
-  textItems = textItems.filter((textItem) => !isEmptySpace(textItem));
+  textItems = textItems.filter(textItem => !isEmptySpace(textItem));
 
   return textItems;
 };
